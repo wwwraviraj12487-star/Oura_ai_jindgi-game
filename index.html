@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AURA: AI Quantum Life Optimizer</title>
+    
+    <!-- ब्राउज़र टैब आइकॉन (Favicon) -->
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0f0c29">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Manifest Link -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-glow: rgba(0, 242, 255, 0.5);
+            --accent-color: #00f2ff;
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #e0e0e0;
+            --xp-color: #00f2ff;
+            --coin-color: #ffd700;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Rajdhani', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .screen { padding: 20px; max-width: 1200px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+        .hidden { display: none !important; }
+
+        /* --- Welcome Screen & 3D Icon --- */
+        #welcome-screen { justify-content: center; align-items: center; text-align: center; }
+        
+        .main-icon {
+            width: 180px;
+            height: 180px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px var(--accent-color));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .aura-logo { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 3.5rem; color: #fff; 
+            text-shadow: 0 0 20px var(--primary-glow); 
+            letter-spacing: 5px;
+        }
+
+        .btn-quantum {
+            margin-top: 30px; padding: 15px 40px; background: transparent; color: #fff;
+            border: 2px solid var(--accent-color); border-radius: 50px; cursor: pointer;
+            font-weight: bold; text-transform: uppercase; box-shadow: 0 0 15px var(--primary-glow);
+            transition: 0.3s;
+        }
+        .btn-quantum:hover { background: var(--accent-color); color: #000; }
+
+        /* --- Dashboard --- */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .level-badge { background: var(--accent-color); color: #000; padding: 4px 10px; border-radius: 5px; font-weight: bold; }
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+        .task-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-bottom: 10px; background: rgba(255,255,255,0.03); border-radius: 12px; }
+        .task-item.completed { opacity: 0.5; text-decoration: line-through; border-left: 4px solid #4caf50; }
+
+        .mood-selector { display: flex; gap: 8px; margin-top: 10px; }
+        .mood-btn { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; }
+
+        .coin-balance { font-size: 2.5rem; color: var(--coin-color); font-family: 'Orbitron'; }
+
+        /* Install Button PWA */
+        #install-pwa {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 9999; background: var(--coin-color); color: #000;
+            padding: 10px 25px; border-radius: 50px; font-weight: bold; display: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); border: none; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="install-pwa"><i class="fas fa-download"></i> AURA इंस्टॉल करें</button>
+
+    <div id="welcome-screen" class="screen">
+        <!-- आपका सुंदर 3D आइकॉन -->
+        <img src="icon.png" alt="AURA Icon" class="main-icon">
+        
+        <h1 class="aura-logo">AURA</h1>
+        <p style="letter-spacing: 5px; color: var(--accent-color); font-weight: bold;">QUANTUM LIFE OPTIMIZER</p>
+        <button class="btn-quantum" onclick="initApp()">सिस्टम एक्सेस करें</button>
+    </div>
+
+    <div id="main-dashboard" class="screen hidden">
+        <div class="header">
+            <div>
+                <h3>आर्किटेक्ट #01</h3>
+                <span class="level-badge">LVL <span id="lvl-display">1</span></span>
+            </div>
+            <div class="glass-card" style="padding: 10px 20px; text-align: right;">
+                <p style="font-size: 0.7rem; opacity: 0.7; letter-spacing: 2px;">क्वांटम संपत्ति</p>
+                <h4 style="color: var(--coin-color);"><span id="coins-display">0</span> ⏣</h4>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="left-col">
+                <div class="glass-card" style="padding: 20px; margin-bottom: 20px;">
+                    <h3><i class="fas fa-magic"></i> AI गोल कनवर्टर</h3>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <input type="text" id="goal-input" placeholder="अपना सपना लिखें..." style="flex:1; padding: 12px; border-radius:10px; border:none; background:rgba(0,0,0,0.3); color:#fff; outline: none;">
+                        <button class="btn-quantum" style="margin:0; padding: 10px 20px;" onclick="convertGoal()">बदलें</button>
+                    </div>
+                    <ul id="task-list" style="list-style:none; margin-top:20px;"></ul>
+                </div>
+            </div>
+
+            <div class="right-col">
+                <div class="glass-card" style="padding: 20px; margin-bottom: 20px;">
+                    <h3><i class="fas fa-brain"></i> एम्पैथी AI मूड</h3>
+                    <div class="mood-selector">
+                        <button class="mood-btn" onclick="updateTheme('zen')">Zen</button>
+                        <button class="mood-btn" onclick="updateTheme('electric')">Electric</button>
+                        <button class="mood-btn" onclick="updateTheme('productive')">Default</button>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="padding: 30px 20px; text-align: center;">
+                    <i class="fas fa-wallet" style="font-size: 2.5rem; color: var(--coin-color); margin-bottom: 10px;"></i>
+                    <p style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem;">वॉलेट बैलेंस</p>
+                    <div class="coin-balance" id="wallet-coins">0</div>
+                    <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">EXPERIENCE: <span id="xp-display">0</span> XP</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let state = { xp: 2450, level: 5, coins: 120, tasks: [] };
+
+        // PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
+        }
+
+        // PWA Install Event
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('install-pwa').style.display = 'block';
+        });
+
+        document.getElementById('install-pwa').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') document.getElementById('install-pwa').style.display = 'none';
+                deferredPrompt = null;
+            }
+        });
+
+        function initApp() {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('main-dashboard').classList.remove('hidden');
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('xp-display').innerText = state.xp;
+            document.getElementById('coins-display').innerText = state.coins;
+            document.getElementById('wallet-coins').innerText = state.coins;
+            document.getElementById('lvl-display').innerText = state.level;
+            renderTasks();
+        }
+
+        function updateTheme(mood) {
+            const root = document.querySelector(':root');
+            const configs = {
+                zen: { glow: 'rgba(0, 242, 255, 0.6)', accent: '#00f2ff', bg: 'linear-gradient(135deg, #000428, #004e92)' },
+                electric: { glow: 'rgba(255, 115, 0, 0.6)', accent: '#ff7300', bg: 'linear-gradient(135deg, #1f1c18, #8e0e00)' },
+                productive: { glow: 'rgba(138, 43, 226, 0.6)', accent: '#a155ff', bg: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)' }
+            };
+            const c = configs[mood];
+            root.style.setProperty('--primary-glow', c.glow);
+            root.style.setProperty('--accent-color', c.accent);
+            root.style.setProperty('--bg-gradient', c.bg);
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('task-list');
+            list.innerHTML = state.tasks.length ? state.tasks.map(t => `
+                <li class="task-item ${t.completed ? 'completed' : ''}">
+                    <span>${t.text}</span>
+                    <button onclick="completeTask(${t.id})" style="background:transparent; border:none; color:var(--accent-color); font-weight:bold; cursor:pointer;">
+                        ${t.completed ? 'COMPLETED' : 'DONE'}
+                    </button>
+                </li>
+            `).join('') : '<p style="text-align:center; opacity:0.5;">AI गोल कनवर्टर से टास्क जनरेट करें...</p>';
+        }
+
+        function convertGoal() {
+            const val = document.getElementById('goal-input').value;
+            if(!val) return;
+            state.tasks.unshift({ id: Date.now(), text: val, completed: false });
+            document.getElementById('goal-input').value = '';
+            updateUI();
+        }
+
+        function completeTask(id) {
+            const task = state.tasks.find(t => t.id === id);
+            if(task && !task.completed) {
+                task.completed = true;
+                state.coins += 25; state.xp += 150;
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#ffd700', '#00f2ff'] });
+                updateUI();
+            }
+        }
+    </script>
+</body>
+</html>
