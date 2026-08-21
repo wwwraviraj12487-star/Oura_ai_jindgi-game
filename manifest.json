@@ -1,8 +1,8 @@
 {
   "name": "AURA Quantum Optimizer",
   "short_name": "AURA",
-  "description": "AURA is the world's first AI Quantum Life Optimizer that gamifies your real-life habits using futuristic technology. Transform your business, health, and coding goals into actionable tasks while earning digital coins and levels in a stunning glassmorphism interface.",
-  "start_url": "index.html",
+  "description": "AURA is the world's first AI Quantum Life Optimizer that gamifies your real-life habits using futuristic technology. Transform your business, health, and coding goals into actionable tasks while earning digital coins and levels.",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f0c29",
   "theme_color": "#0f0c29",
@@ -28,14 +28,14 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "AURA Mobile Dashboard - Neural Actionables View"
+      "label": "AURA Mobile Dashboard"
     },
     {
       "src": "screenshot2.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "AURA Desktop Experience - Quantum Goal Tracker"
+      "label": "AURA Experience"
     }
   ]
 }
